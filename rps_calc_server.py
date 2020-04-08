@@ -1,7 +1,8 @@
+import argparse
 import http.server
 import threading
-import argparse
 import time
+import os
 
 from prometheus_client import Counter, Gauge
 from prometheus_client import start_http_server
@@ -10,14 +11,22 @@ HTTP_HOST = '0.0.0.0'
 HTTP_PORT = 8080
 METRICS_PORT = 8081
 
+NUMBER_REQUESTS = 100
+TIME_FOR_CURRENT_RPS = 10
+TIME_FOR_AVG_RPS = 60
+
 parser = argparse.ArgumentParser()
-parser.add_argument('--NUMBER_REQUESTS', default='100', type=int)
-parser.add_argument('--TIME_FOR_CURRENT_RPS', default='10', type=int)
-parser.add_argument('--TIME_FOR_AVG_RPS', default='60', type=int)
+parser.add_argument('--NUMBER_REQUESTS', default=os.environ.get('NUMBER_REQUESTS'), type=int)
+parser.add_argument('--TIME_FOR_CURRENT_RPS', default=os.environ.get('TIME_FOR_CURRENT_RPS'), type=int)
+parser.add_argument('--TIME_FOR_AVG_RPS', default=os.environ.get('TIME_FOR_AVG_RPS'), type=int)
 args = parser.parse_args()
-NUMBER_REQUESTS = args.NUMBER_REQUESTS
-TIME_FOR_CURRENT_RPS = args.TIME_FOR_CURRENT_RPS
-TIME_FOR_AVG_RPS = args.TIME_FOR_AVG_RPS
+
+if args.NUMBER_REQUESTS:
+    NUMBER_REQUESTS = args.NUMBER_REQUESTS
+if args.TIME_FOR_CURRENT_RPS:
+    TIME_FOR_CURRENT_RPS = args.TIME_FOR_CURRENT_RPS
+if args.TIME_FOR_AVG_RPS:
+    TIME_FOR_AVG_RPS = args.TIME_FOR_AVG_RPS
 
 TOTAL_REQUESTS = Counter('requests_total', 'Total Requested')
 CURRENT_RPS = Gauge('current_rps', 'Current RPS / per 10 seconds')
