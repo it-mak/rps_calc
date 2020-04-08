@@ -4,8 +4,15 @@ import threading
 import time
 import os
 
-from prometheus_client import Counter, Gauge
+from prometheus_client import Counter, Gauge, REGISTRY, PROCESS_COLLECTOR, PLATFORM_COLLECTOR,GC_COLLECTOR
 from prometheus_client import start_http_server
+
+# Unregister default metrics
+REGISTRY.unregister(PROCESS_COLLECTOR)
+REGISTRY.unregister(PLATFORM_COLLECTOR)
+REGISTRY.unregister(GC_COLLECTOR)
+
+
 
 HTTP_HOST = '0.0.0.0'
 HTTP_PORT = 8080
