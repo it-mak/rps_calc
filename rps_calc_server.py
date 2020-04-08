@@ -122,8 +122,7 @@ class AvgRpsPerRequest(object):
                 requests_diff = self._get_requests_value() - requests_count1
                 if requests_diff >= NUMBER_REQUESTS:
                     total_time = time.time() - started_measure_time
-                    requests_count = self._get_requests_value()
-                    AVG_RPS_FOR_REQUESTS.set(requests_count // total_time)
+                    AVG_RPS_FOR_REQUESTS.set(requests_diff // total_time)
                     started_measure_time = time.time()
                     requests_count1 = self._get_requests_value()
 
